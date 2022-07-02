@@ -52,6 +52,87 @@ For compiling program in Linux and Windows environment, you can use below comman
     ab ff + 2 * ad cff + / 3 5 a * + * 
 
 Assembly code generation is completed successfully. Program is stored in assembly.asm in the same folder
+- assembly.asm:
+```
+code segment
+
+str db 6 dup('$') ;STRING TO STORE NUMBER.
+MOV BX,0xff
+PUSH BX
+MOV BX,0xab
+PUSH BX
+POP CX
+POP AX
+ADD AX,CX
+PUSH AX
+PUSH 0x2
+POP CX
+POP AX
+MUL CX
+PUSH AX
+MOV BX,0xcff
+PUSH BX
+MOV BX,0xad
+PUSH BX
+POP CX
+POP AX
+ADD AX,CX
+PUSH AX
+MOV DX,0
+POP CX
+POP AX
+DIV CX
+PUSH AX
+PUSH 0xa
+PUSH 0x5
+POP CX
+POP AX
+MUL CX
+PUSH AX
+PUSH 0x3
+POP CX
+POP AX
+ADD AX,CX
+PUSH AX
+POP CX
+POP AX
+MUL CX
+PUSH AX
+
+
+call number2string  ;CONVERT AX. RESULT IN STR.
+;DISPLAY STRING.
+mov  ah, 9
+mov  dx, offset str  ;NUMBER CONVERTED.
+int  21h
+
+
+int 20h ; return to OS
+code ends
+
+
+;converts number in AX, ectracts digits one by one, push them in stack, then pop them to construct string
+proc number2string 
+mov  bx, 10 ;DIGITS ARE EXTRACTED DIVIDING BY 10.
+mov  cx, 0 ;COUNTER FOR EXTRACTED DIGITS.
+cycle1:
+mov  dx, 0 ;NECESSARY TO DIVIDE BY BX.
+div  bx ;DX:AX / 10 = AX:QUOTIENT DX:REMAINDER.
+push dx ;PRESERVE DIGIT EXTRACTED FOR LATER.
+inc  cx ;INCREASE COUNTER FOR EVERY DIGIT EXTRACTED.
+cmp  ax, 0 ;IF NUMBER IS
+jne  cycle1 ;NOT ZERO, LOOP.
+mov  si, offset str ;NOW RETRIEVE PUSHED DIGITS.
+cycle2:
+pop  dx
+add  dl, 48 ;CONVERT DIGIT TO CHARACTER.
+mov  [ si ], dl
+inc  si
+loop cycle2
+ret
+endp
+
+```
 
 So take assembly.asm and compile/run it in a 8086 assembly compiler. 
 
